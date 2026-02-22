@@ -9,6 +9,9 @@
           {{ if .Title }}
           <h3 class="post-card-title p-name">{{ .Title }}</h3>
           {{ end }}
+          {{ with .Params.categories }}
+          <div class="post-card-categories">{{ range $i, $cat := . }}{{ if $i }}, {{ end }}<span class="p-category">{{ $cat }}</span>{{ end }}</div>
+          {{ end }}
           <p class="post-card-excerpt p-summary">{{ .Summary | plainify | truncate 200 }}</p>
           {{ if .Title }}
           <span class="post-card-readmore">Read more →</span>
