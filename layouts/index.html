@@ -1,11 +1,19 @@
 {{ define "main" }}
-<main>
-  {{ range .Site.RegularPages }}
-  <article>
-    {{ if .Title }}<h2><a href="{{ .Permalink }}">{{ .Title }}</a></h2>{{ end }}
-    <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time>
-    {{ .Content }}
-  </article>
-  {{ end }}
+<main class="site-main site-main--feed">
+  <div class="post-feed h-feed">
+    {{ range .Site.RegularPages }}
+    <article class="post-card h-entry">
+      <a href="{{ .Permalink }}" class="post-card-link u-url">
+        <div class="post-card-content">
+          {{ if .Title }}
+          <h3 class="post-card-title p-name">{{ .Title }}</h3>
+          {{ end }}
+          <p class="post-card-excerpt p-summary">{{ .Summary | plainify | truncate 200 }}</p>
+          <time class="post-card-date dt-published" datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2 Jan 2006" }}</time>
+        </div>
+      </a>
+    </article>
+    {{ end }}
+  </div>
 </main>
 {{ end }}
