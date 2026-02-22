@@ -80,7 +80,7 @@
 	"enableRobotsTXT": true,
 	"languageCode": "[LANGUAGE]",
 	"defaultContentLanguage": "[LANGUAGE]",
-	"paginate": 25,
+	"pagination": { "pagerSize": 25 },
 	"pluralizeListTitles": false,
 	"params": {
 		"description": "Follow <a href=\"https://micro.blog/[USERNAME]\">@[USERNAME] on Micro.blog</a>.",
