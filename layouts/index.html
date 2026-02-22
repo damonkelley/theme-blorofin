@@ -1,7 +1,7 @@
 {{ define "main" }}
 <main class="site-main">
   <div class="post-feed h-feed">
-    {{ range where .Site.RegularPages "Type" "post" }}
+    {{ range .Site.RegularPages }}
     <article class="post-card h-entry">
       <a href="{{ .Permalink }}" class="post-card-link u-url">
         <div class="post-card-content">
