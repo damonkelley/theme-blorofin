@@ -1,0 +1,20 @@
+{{ define "main" }}
+<main class="site-main">
+  <article class="post h-entry">
+    <header class="post-header">
+      {{ with .Title }}
+      <h1 class="post-title p-name">{{ . }}</h1>
+      {{ end }}
+      {{ if not .Date.IsZero }}
+      <div class="post-meta">
+        <time class="dt-published" datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2 Jan 2006" }}</time>
+        {{ if .Title }} — {{ .ReadingTime }} min read{{ end }}
+      </div>
+      {{ end }}
+    </header>
+    <section class="post-body e-content{{ if .Title }} post-body--long{{ end }}">
+      {{ .Content }}
+    </section>
+  </article>
+</main>
+{{ end }}
