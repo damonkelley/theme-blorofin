@@ -344,31 +344,39 @@ a {
   font-family: var(--font-display);
 }
 
-/* Archive */
+/* Archive — micro.blog renders archive without Hugo's <main> wrapper,
+   so we scope with body > to avoid colliding with homepage .h-feed/.h-entry */
 
-.archive-feed {
+body > .h-feed {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  max-width: 920px;
+  margin: 48px auto;
+  padding: 0 48px;
 }
 
-.archive-entry {
+body > .h-feed > .h-entry {
   font-size: var(--step-0);
   line-height: 1.5;
   margin: 0;
 }
 
-.archive-entry .dt-published {
+body > .h-feed > .h-entry .dt-published {
   color: var(--color-text);
   opacity: 0.45;
   font-size: var(--step--1);
+  font-family: var(--font-mono, monospace);
   white-space: nowrap;
 }
 
-.archive-entry .p-name {
+body > .h-feed > .h-entry .p-name {
   font-weight: 600;
 }
 
+body > .h-feed > .h-entry .p-name b {
+  font-weight: inherit;
+}
 
 /* Responsive */
 
