@@ -13,6 +13,12 @@
   --color-bg: #f9f9f7;
   --color-accent: #a347bf;
   --color-border: rgba(0, 0, 0, 0.08);
+
+  /* Display font — swap to preview: */
+  /* 'Fraunces', serif */
+  /* 'Playfair Display', serif */
+  /* 'Bricolage Grotesque', sans-serif */
+  --font-display: 'Fraunces', serif;
 }
 
 html {
@@ -34,6 +40,9 @@ body {
   background-color: var(--color-bg);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 a {
@@ -62,6 +71,10 @@ a {
   font-weight: 725;
   letter-spacing: -0.02em;
   line-height: 1;
+}
+
+.site-title {
+  font-family: var(--font-display);
 }
 
 .site-nav ul {
@@ -126,6 +139,10 @@ a {
   transition: color 0.2s;
 }
 
+.post-card-title {
+  font-family: var(--font-display);
+}
+
 .post-card-excerpt {
   font-size: var(--step-0);
   line-height: 1.5;
@@ -168,6 +185,10 @@ a {
   letter-spacing: -0.02em;
   line-height: 1.1;
   margin-bottom: 16px;
+}
+
+.post-title {
+  font-family: var(--font-display);
 }
 
 .post-meta {
@@ -290,6 +311,10 @@ a {
   margin-bottom: 32px;
 }
 
+.section-title {
+  font-family: var(--font-display);
+}
+
 .section-intro {
   margin-bottom: 32px;
 }
@@ -298,20 +323,23 @@ a {
 /* Footer */
 
 .site-footer {
-  margin-top: 40px;
+  margin-top: auto;
 }
 
 .site-footer-inner {
   max-width: 1200px;
-  margin: 0 auto 80px;
+  margin: 0 auto;
   padding: 28px 48px;
   border-top: 1px solid var(--color-border);
-  border-bottom: 1px solid var(--color-border);
 }
 
 .footer-title {
   font-size: var(--step-0);
   font-weight: 700;
+}
+
+.footer-title {
+  font-family: var(--font-display);
 }
 
 
