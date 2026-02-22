@@ -1,0 +1,18 @@
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href="/" class="site-title">{{ .Site.Title }}</a>
+    <nav class="site-nav">
+      <ul>
+        {{ range .Site.Menus.main }}
+        <li>
+          {{ if and .Page .Page.Params.redirect }}
+          <a href="{{ .Page.Params.redirect }}">{{ .Name }}</a>
+          {{ else }}
+          <a href="{{ .URL | relLangURL | safeURL }}">{{ .Name }}</a>
+          {{ end }}
+        </li>
+        {{ end }}
+      </ul>
+    </nav>
+  </div>
+</header>

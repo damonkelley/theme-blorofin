@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html>
-    {{ partial "head.html" . }}
-    <body>
-        {{ partial "header.html" . }}
-        {{ block "main" . }}{{ end }}
-        {{ partial "footer.html" . }}
-		{{ partial "custom_footer.html" . }}
-    </body>
+<html lang="{{ .Site.LanguageCode | default "en" }}">
+{{ partial "head.html" . }}
+<body>
+  {{ partial "header.html" . }}
+  {{ block "main" . }}{{ end }}
+  {{ partial "footer.html" . }}
+  {{ partial "custom_footer.html" . }}
+</body>
 </html>
