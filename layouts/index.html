@@ -5,11 +5,14 @@
     <article class="post-card h-entry">
       <a href="{{ .Permalink }}" class="post-card-link u-url">
         <div class="post-card-content">
+          <time class="post-card-date dt-published" datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2 Jan 2006" }}{{ if .Title }} — {{ .ReadingTime }} min read{{ end }}</time>
           {{ if .Title }}
           <h3 class="post-card-title p-name">{{ .Title }}</h3>
           {{ end }}
           <p class="post-card-excerpt p-summary">{{ .Summary | plainify | truncate 200 }}</p>
-          <time class="post-card-date dt-published" datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2 Jan 2006" }}</time>
+          {{ if .Title }}
+          <span class="post-card-readmore">Read more →</span>
+          {{ end }}
         </div>
       </a>
     </article>
