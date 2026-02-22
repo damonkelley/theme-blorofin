@@ -1,5 +1,10 @@
 {{ define "main" }}
 <main class="site-main">
+  <!-- DEBUG: dumping page types -->
+  {{ range .Site.RegularPages }}
+  <p>Type={{ .Type }} Kind={{ .Kind }} Title={{ .Title }} Path={{ .RelPermalink }}</p>
+  {{ end }}
+  <!-- END DEBUG -->
   <div class="post-feed h-feed">
     {{ range where .Site.Pages.ByDate.Reverse "Type" "post" }}
     <article class="post-card h-entry">
