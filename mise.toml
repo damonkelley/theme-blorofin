@@ -1,0 +1,14 @@
+[tools]
+hugo = "0.140.0"
+
+[tasks.serve]
+description = "Start Hugo dev server with live reload"
+run = "hugo server --noBuildLock -s dev-site"
+
+[tasks.build]
+description = "Build the site to dev-site/public/"
+run = "hugo --noBuildLock -s dev-site"
+
+[tasks.clean]
+description = "Remove generated files"
+run = "rm -rf dev-site/public dev-site/resources"
