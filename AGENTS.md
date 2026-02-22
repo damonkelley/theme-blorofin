@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-A custom micro.blog theme built on Hugo 0.140. Micro.blog themes are Hugo themes with specific conventions for content types, template variables, and deployment.
+A custom micro.blog theme plugin built on Hugo 0.91 (micro.blog's recommended version). Micro.blog themes are Hugo themes with specific conventions for content types, template variables, and deployment.
 
 ## Local Development
 
@@ -12,58 +12,66 @@ mise run build    # Build to dev-site/public/
 mise run clean    # Remove generated files
 ```
 
-Hugo 0.140 is installed at `~/bin/hugo`. The `dev-site/` directory contains a local Hugo site that symlinks back to this theme. Sample content lives in `dev-site/content/`. The dev scaffold is gitignored.
+Hugo 0.91.2 is installed at `~/bin/hugo`. The `dev-site/` directory contains a local Hugo site that symlinks back to this theme. Sample content lives in `dev-site/content/`. The dev scaffold is gitignored. Config file is `dev-site/config.json`.
 
-## Hugo Version: 0.140
+## Hugo Version: 0.91
 
-This theme targets Hugo 0.140. Key differences from older versions used by other micro.blog themes:
+This theme targets Hugo 0.91, which is micro.blog's recommended version. Key notes:
 
-- `.Site.Author` is removed — use `.Site.Params.author` instead
-- `paginate` config key is removed — use `pagination.pagerSize`
-- `getJSON`/`getCSV` are removed — use `resources.GetRemote`
-- `.Page.NextPage`/`.PrevPage` are removed — use `.Page.Next`/`.Page.Prev`
+- `.Site.Author` — the correct way to access author info (`.Site.Author.name`, `.Site.Author.avatar`, etc.)
+- `paginate` — top-level config key for pagination count (NOT `pagination.pagerSize`)
+- Config file is `config.json` (NOT `hugo.json`)
+- Hugo 0.91 does NOT have `--noBuildLock` flag
+- Hugo 0.91 does NOT short-circuit `and` in templates — guard nil checks carefully (e.g., `.Page.Params.redirect` crashes when `.Page` is nil)
 
-The official micro.blog themes (Marfa, etc.) still use `.Site.Author`. This theme has already been migrated to `.Site.Params.author`.
+**Do NOT use Hugo 0.140 patterns** — `.Site.Params.author`, `pagination.pagerSize`, etc. will not work on micro.blog.
 
 ## Micro.blog Theme Architecture
 
-### Template Lookup Order
+### Template Lookup Order (Plugin Mode)
 
 Micro.blog checks templates in this order:
-1. Your custom theme (`theme-blorofin/layouts/`)
-2. The selected built-in design (Marfa, Sumo, etc.)
-3. The Blank theme (`microdotblog/theme-blank`)
+1. Custom theme (if any)
+2. **Plugins** (like Blorofin — `theme-blorofin/layouts/`)
+3. Selected built-in design (Default, Marfa, etc.)
+4. The Blank theme (`microdotblog/theme-blank`)
 
-You only need to provide templates you want to customize. Everything else falls through to the Blank theme.
+This theme is installed as a **plugin**, not a custom theme. The "Default" design is selected as the base.
 
-### Required File Structure
+### Important Plugin Notes
+
+- The `master` branch is what micro.blog clones (not `main`) — push to both branches
+- `custom.css` is reserved by micro.blog for user customizations via "Edit CSS" — our theme uses `css/blorofin.css`
+- Fonts and CSS are loaded in `baseof.html` to bypass any custom theme `head.html` override
+- The Default theme's `post/single.html` overrides `_default/single.html` — we add our own `layouts/post/single.html`
+- To update plugin: Themes → Blorofin info page → click refresh/re-clone icon → wait for build
+
+### File Structure
 
 ```
 theme-blorofin/
 ├── layouts/
 │   ├── _default/
-│   │   ├── baseof.html              # Base template — all pages inherit from this
+│   │   ├── baseof.html              # Base template — loads fonts/CSS, flex body layout
 │   │   ├── list.html                # Category/section listing
-│   │   ├── list.archivehtml.html    # Archive page (override)
+│   │   ├── list.archivehtml.html    # Archive page
 │   │   ├── list.json.json           # JSON Feed for categories
-│   │   ├── list.photoshtml.html     # Photos page (override)
+│   │   ├── list.photoshtml.html     # Photos page
 │   │   ├── rss.xml                  # RSS feed for categories
 │   │   ├── single.html              # Single page (about, etc.)
 │   │   └── sitemap.xml              # Sitemap
 │   ├── post/
-│   │   └── single.html              # Single blog post (optional, falls back to _default/single.html)
-│   ├── reply/
-│   │   └── single.html              # Reply post (optional)
-│   ├── section/
-│   │   └── replies.html             # Replies collection (optional)
+│   │   └── single.html              # Blog post template (overrides Default theme)
 │   ├── partials/
 │   │   ├── head.html                # <head> content (loads microblog_head.html)
 │   │   ├── header.html              # Site header/navigation
-│   │   ├── footer.html              # Site footer
+│   │   ├── footer.html              # Site footer (sticky via flexbox)
 │   │   ├── custom_footer.html       # Hook for plugins to inject content
-│   │   ├── microblog_head.html      # Micro.blog-specific <link> tags (feeds, rel=me, etc.)
+│   │   ├── microblog_head.html      # Micro.blog-specific <link> tags
 │   │   └── microblog_syndication.html  # Bluesky/syndication links
-│   ├── index.html                   # Homepage
+│   ├── redirect/
+│   │   └── single.html              # Page redirects
+│   ├── index.html                   # Homepage with post filter
 │   ├── index.json                   # JSON Feed (homepage)
 │   ├── index.xml                    # RSS Feed (homepage)
 │   ├── list.archivehtml.html        # Archive page
@@ -74,23 +82,28 @@ theme-blorofin/
 │   ├── list.podcastxml.xml          # Podcast RSS feed
 │   ├── list.rsd.xml                 # RSD (Really Simple Discovery)
 │   ├── newsletter.html              # Email newsletter template
-│   ├── redirect/
-│   │   └── single.html              # Page redirects
 │   └── robots.txt                   # Robots.txt template
 ├── static/
-│   └── custom.css                   # Theme stylesheet (referenced by microblog_head.html)
+│   └── css/
+│       └── blorofin.css             # Theme stylesheet (loaded via baseof.html)
 ├── config.json                      # Hugo/micro.blog configuration
-├── mise.toml                        # Dev tasks
+├── mise.toml                        # Dev tasks (Hugo 0.91.2)
+├── theme.toml                       # Hugo theme metadata
+├── LICENSE                          # License
 └── AGENTS.md                        # This file
 ```
 
 ### Key Templates
 
-**baseof.html** — The skeleton every page inherits from:
+**baseof.html** — The skeleton every page inherits from. Loads Google Fonts (Inter + Fraunces) and `blorofin.css` directly in `<head>`:
 ```html
 <!DOCTYPE html>
 <html>
-  {{ partial "head.html" . }}
+  <head>
+    <!-- Google Fonts: Inter + Fraunces -->
+    <link rel="stylesheet" href="/css/blorofin.css?{{ .Site.Params.theme_seconds }}">
+    {{ partial "head.html" . }}
+  </head>
   <body>
     {{ partial "header.html" . }}
     {{ block "main" . }}{{ end }}
@@ -100,13 +113,13 @@ theme-blorofin/
 </html>
 ```
 
-All page templates define `{{ define "main" }}...{{ end }}` to inject content into the block.
+Body uses `display: flex; flex-direction: column; min-height: 100vh` for sticky footer layout.
 
-**index.html** — Homepage. Lists posts using `.Site.RegularPages` or filtered by type/category.
+**index.html** — Homepage. Filters posts using `where .Site.Pages.ByDate.Reverse "Type" "post"`. Differentiates longform (titled) vs shortform (untitled) posts.
 
-**_default/single.html** — Used for standalone pages (About, etc.) and as fallback for posts if `post/single.html` doesn't exist.
+**post/single.html** — Blog post template. Must exist to override Default theme's version. Uses `.Title` to differentiate longform vs shortform: longform gets heading, reading time, drop cap; shortform gets just date + content.
 
-**post/single.html** — (Optional) Dedicated post template. Micro.blog stores blog posts with `Type: "post"`.
+**_default/single.html** — Used for standalone pages (About, etc.).
 
 ## Content Types
 
@@ -114,13 +127,13 @@ All page templates define `{{ define "main" }}...{{ end }}` to inject content in
 
 Blog posts live in `content/YYYY/MM/DD/slug.md`. Two flavors:
 
-- **Titled posts** (longform): Have a `title` in front matter. Displayed with heading + full content.
-- **Untitled posts** (microblog): No `title` field. Displayed as inline content with timestamp.
+- **Titled posts** (longform): Have a `title` in front matter. Displayed with Fraunces heading, reading time, and purple drop cap on first paragraph.
+- **Untitled posts** (shortform): No `title` field. Displayed as inline content with date only. No reading time, no drop cap.
 
 Branch on `.Title` in templates:
 ```html
 {{ if .Title }}
-  <h2><a href="{{ .Permalink }}">{{ .Title }}</a></h2>
+  <h1 class="post-title p-name">{{ .Title }}</h1>
 {{ end }}
 ```
 
@@ -136,29 +149,27 @@ Stored separately from posts. Available front matter params:
 - `.Params.reply_to_avatar` — Avatar of reply target
 - `.Params.reply_to_hostname` — Hostname (e.g., "micro.blog")
 
-Templates: `reply/single.html` and `section/replies.html`.
-
 ### Photos
 
 Posts with photos get `.Params.photos` (JPEGs only) and `.Params.images` (all image types) set automatically by micro.blog.
 
 Filter photo posts: `{{ $list := where .Site.Pages ".Params.photos" "!=" nil }}`
 
-### Podcasts
+### Categories (No Tags)
 
-Posts with audio get `.Params.audio` and `.Params.audio_with_metadata` (includes `.url`, `.size`, `.duration_seconds`).
+Micro.blog uses **categories only** (no tags). Access via `.Params.categories` on posts.
 
 ## Template Variables
 
-### Site Variables (Hugo 0.140)
+### Site Variables (Hugo 0.91)
 
 | Variable | Description |
 |---|---|
 | `.Site.Title` | Blog title |
 | `.Site.BaseURL` | Base URL |
-| `.Site.Params.author.name` | Author display name |
-| `.Site.Params.author.avatar` | Author avatar URL |
-| `.Site.Params.author.username` | Micro.blog username |
+| `.Site.Author.name` | Author display name |
+| `.Site.Author.avatar` | Author avatar URL |
+| `.Site.Author.username` | Micro.blog username |
 | `.Site.Params.description` | Site description/tagline (supports HTML) |
 | `.Site.RegularPages` | All content pages (no sections/taxonomies) |
 | `.Site.Pages` | All pages including sections |
@@ -197,24 +208,51 @@ Posts with audio get `.Params.audio` and `.Params.audio_with_metadata` (includes
 {{ end }}
 ```
 
+Config: `"paginate": 25` in `config.json` (top-level key, Hugo 0.91 style).
+
 Pagination is controlled by site params:
 - `paginate_home` — Enable on homepage
 - `paginate_categories` — Enable on category pages
 - `paginate_replies` — Enable on replies page
 
+## Design Spec
+
+### Typography
+- **Body font**: Inter (Google Fonts), system fallback stack
+- **Display font**: Fraunces (Google Fonts) for headings, site title (header + footer)
+- **Type scale**: Minor third (1.2 ratio), base 17px via `html { font-size: 106.25% }`
+- CSS custom properties: `--step-0` through `--step-5`
+
+### Colors
+- **Background**: `#f9f9f7` off-white
+- **Text**: `#15171a` near-black
+- **Accent**: `#a347bf` purple — used on anchor tags, nav link hover, blockquote left border, drop cap, "Read more →"
+- **Border**: `rgba(0, 0, 0, 0.08)`
+
+### Layout
+- Body: `display: flex; flex-direction: column; min-height: 100vh` (sticky footer)
+- Header: flexbox, max-width 1200px
+- Content (`.site-main`): `flex: 1; width: 100%; max-width: 920px; margin: 0 auto`
+- Footer: `margin-top: auto`, top border only, Fraunces site name
+
+### CSS Notes
+- Stylesheet is `static/css/blorofin.css` (NOT `custom.css` — reserved by micro.blog)
+- Cache-busted via `?{{ .Site.Params.theme_seconds }}` query param
+- Use flex properties for layout (not float/grid)
+
 ## config.json Reference
 
 The theme's `config.json` is merged over micro.blog's defaults. Allowed top-level keys:
 
-`params`, `title`, `description`, `defaultContentLanguage`, `disableKinds`, `enableEmoji`, `hasCJKLanguage`, `languageCode`, `languageName`, `pagination.pagerSize`, `related`, `rssLimit`, `summaryLength`, `enableRobotsTXT`, `markup`, `enableInlineShortCodes`, `mediaTypes`, `outputFormats`, `outputs`
+`params`, `title`, `description`, `defaultContentLanguage`, `disableKinds`, `enableEmoji`, `hasCJKLanguage`, `languageCode`, `languageName`, `paginate`, `related`, `rssLimit`, `summaryLength`, `enableRobotsTXT`, `markup`, `enableInlineShortCodes`, `mediaTypes`, `outputFormats`, `outputs`
 
 Custom params go under `params` and are accessed via `.Site.Params.your_key`.
 
 ## CSS
 
-The theme stylesheet is at `static/custom.css` and is loaded by `microblog_head.html`:
+The theme stylesheet is at `static/css/blorofin.css` and is loaded directly in `baseof.html`:
 ```html
-<link rel="stylesheet" href="{{ "custom.css" | relURL }}?{{ .Site.Params.theme_seconds }}">
+<link rel="stylesheet" href="/css/blorofin.css?{{ .Site.Params.theme_seconds }}">
 ```
 
 The `theme_seconds` query param is a cache-busting timestamp set by micro.blog on each publish.
@@ -251,13 +289,21 @@ The `custom_footer.html` partial is a hook for plugin content injection.
 
 ## Deployment
 
-1. Push theme changes to GitHub
-2. In micro.blog: Posts → Design → Edit Custom Themes
-3. Create/update theme by cloning the GitHub repo URL
-4. Select the theme under Posts → Design
-5. Set Hugo version to 0.140 in micro.blog settings
+This theme is deployed as a **plugin** (not a custom theme):
 
-Micro.blog will skip binary files (images, fonts) when importing. Upload those via Posts → Uploads.
+1. Push changes to GitHub (both `main` and `master` branches)
+2. In micro.blog: Themes → Blorofin info page → click refresh/re-clone icon
+3. Wait ~30 seconds for clone + rebuild
+4. Check build logs for "Clone: Done" + "Publish: Done 🎉"
+
+### Micro.blog IDs
+- Blog site_id: 298568
+- Blorofin plugin theme_id: 95586
+- Admin URLs:
+  - Design: `https://micro.blog/account/design/298568`
+  - Themes: `https://micro.blog/account/themes`
+  - Plugin info: `https://micro.blog/account/themes/95586/info`
+  - Build logs: `https://micro.blog/account/logs`
 
 ## Reference Links
 
@@ -269,6 +315,6 @@ Micro.blog will skip binary files (images, fonts) when importing. Upload those v
 - [Hosted Replies](https://help.micro.blog/t/hosted-replies/66)
 - [Categories](https://help.micro.blog/t/using-categories/68)
 - [Blank theme repo](https://github.com/microdotblog/theme-blank)
-- [Marfa theme repo](https://github.com/microdotblog/theme-marfa) — Good reference for a full-featured theme
-- [Hugo 0.140 release](https://github.com/gohugoio/hugo/releases/tag/v0.140.0)
+- [Default theme repo](https://github.com/microdotblog/theme-default) — The base design currently selected
+- [Hugo 0.91 release](https://github.com/gohugoio/hugo/releases/tag/v0.91.0)
 - [Hugo template docs](https://gohugo.io/templates/)
