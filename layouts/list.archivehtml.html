@@ -1,8 +1,9 @@
 {{ define "main" }}
+<main class="site-main">
 
 	{{ $list := ($.Site.GetPage "taxonomyTerm" "categories").Pages }}
 	{{ if gt (len $list) 0 }}
-		<div class="archive_categories" style="border-bottom: 1px solid lightgray; padding-bottom: 15px; margin-bottom: 30px;">
+		<div class="archive-categories">
 			{{ range $list }}
 				<p><a href="{{ .Permalink }}">{{ .Title }}</a></p>
 			{{ end }}
@@ -10,11 +11,11 @@
 	{{ end }}
 	
 	{{ $list := (where .Site.Pages "Type" "post") }}
-	<div class="h-feed">
+	<div class="archive-feed h-feed">
 		{{ range $list }}
 	
-			<p class="h-entry">
-				<a href="{{ .Permalink }}" class="u-url"><time class="dt-published" datetime="{{ .Date.Format "2006-01-02T15:04:05-0700" }}">{{ .Date.Format "2006-01-02" }}</time></a>:
+			<p class="archive-entry h-entry">
+				<a href="{{ .Permalink }}" class="u-url"><time class="dt-published" datetime="{{ .Date.Format "2006-01-02T15:04:05-0700" }}">{{ .Date.Format "2 Jan 2006" }}</time></a>:
 				{{ if .Title }}
 					<span class="p-name"><b>{{ .Title }}</b></span> 
 				{{ end }}
@@ -24,4 +25,5 @@
 		{{ end }}
 	</div>
 
+</main>
 {{ end }}

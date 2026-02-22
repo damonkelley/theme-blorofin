@@ -12,7 +12,7 @@
       </div>
       {{ end }}
     </header>
-    <section class="post-body e-content{{ if .Title }} post-body--long{{ end }}">
+    <section class="post-body e-content{{ if and .Title (eq .Type "post") }} post-body--long{{ end }}">
       {{ .Content }}
     </section>
   </article>

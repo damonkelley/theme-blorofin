@@ -344,6 +344,31 @@ a {
   font-family: var(--font-display);
 }
 
+/* Archive */
+
+.archive-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.archive-entry {
+  font-size: var(--step-0);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.archive-entry .dt-published {
+  color: var(--color-text);
+  opacity: 0.45;
+  font-size: var(--step--1);
+  white-space: nowrap;
+}
+
+.archive-entry .p-name {
+  font-weight: 600;
+}
+
 
 /* Responsive */
 
