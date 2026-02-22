@@ -85,14 +85,11 @@ a {
 /* Main content */
 
 .site-main {
-  max-width: 720px;
+  max-width: 920px;
   margin: 0 auto;
   padding: 48px 24px 80px;
 }
 
-.site-main--feed {
-  max-width: 920px;
-}
 
 
 /* Post feed (homepage + list) */
@@ -174,7 +171,7 @@ a {
 }
 
 /* Drop cap */
-.post-body > p:first-child::first-letter {
+.post-body--long > p:first-child::first-letter {
   float: left;
   font-size: 3.4em;
   font-weight: 700;
